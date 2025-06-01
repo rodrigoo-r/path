@@ -40,7 +40,7 @@
 //   if (abs) { printf("Resolved: %s\n", abs); free(abs); }
 //
 //   char buf[512];
-//   if (get_real_path("./foo/bar.txt", buf, sizeof(buf))) {
+//   if (get_real_path("./foo/bar.txt", buf)) {
 //       printf("Resolved in buffer: %s\n", buf);
 //   }
 //
