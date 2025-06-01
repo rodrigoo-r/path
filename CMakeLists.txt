@@ -5,7 +5,7 @@ project(path C)
 
 set(CMAKE_C_STANDARD 11)
 
-add_library(path STATIC path.c)
+add_library(path STATIC path.c path.h)
 
 if(NOT FLUENT_LIBC_RELEASE) # Manually add libraries only if not in release mode
     FetchContent_Declare(
