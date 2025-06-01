@@ -27,6 +27,19 @@
 #   include <fluent/string_builder/string_builder.h> // fluent_libc
 #endif
 
+/**
+ * @brief Resolves the absolute, canonicalized path for a given file system path.
+ *
+ * This function takes a file system path and returns its absolute, canonicalized version.
+ * On POSIX systems, it uses `realpath` to resolve symbolic links, relative components,
+ * and returns a newly allocated string containing the resolved path.
+ * On Windows systems, it uses `GetFullPathNameA` to obtain the absolute path.
+ *
+ * @param path The input file system path to resolve. Must not be NULL or empty.
+ * @return A newly allocated string containing the resolved absolute path,
+ *         or NULL if the input is invalid, the path cannot be resolved,
+ *         or memory allocation fails. The caller is responsible for freeing the returned string.
+ */
 static inline char *get_real_path(const char *const path)
 {
     // Validate the input path
