@@ -131,7 +131,7 @@ static inline char *get_real_path(const char *const path)
  * @param buffer The buffer to store the resolved absolute path. Must not be NULL.
  * @return 1 if the path was resolved successfully, 0 otherwise.
  */
-static inline int get_real_path(const char *const path, char *const buffer)
+static inline int get_real_path_buff(const char *const path, char *const buffer)
 {
     // Validate the input path
     if (!path || path[0] == '\0')
