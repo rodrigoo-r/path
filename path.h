@@ -12,6 +12,41 @@
 #define FLUENT_LIBC_PATH_LIBRARY_H
 
 // ============= FLUENT LIB C =============
+// Path Manipulation Utility
+// ----------------------------------------
+// Cross-platform functions for resolving and joining file system paths.
+// Provides:
+//   - get_real_path(path)            – Returns a newly allocated, absolute canonical path
+//   - get_real_path(path, buffer, n) – Writes the resolved path into a user buffer
+//   - path_join(path1, path2)        – Concatenates two paths and returns a normalized absolute path
+//
+// Behavior:
+//   - On POSIX: uses realpath(3) to resolve symlinks and “.”/“..” components.
+//   - On Windows: uses GetFullPathNameA to obtain the absolute path.
+//
+// Memory Management:
+//   - The two-argument get_real_path overload writes into a caller-provided buffer – no allocation.
+//   - The one-argument get_real_path and path_join functions return a heap-allocated string.
+//     Caller must free() the returned pointer.
+//
+// Dependencies:
+//   - POSIX: <unistd.h> & realpath
+//   - Windows: <windows.h> & GetFullPathNameA
+//   - Fluent Lib C: string_builder.h for efficient string concatenation in path_join
+//
+// Example:
+// ----------------------------------------
+//   char *abs = get_real_path("./foo/bar.txt");
+//   if (abs) { printf("Resolved: %s\n", abs); free(abs); }
+//
+//   char buf[512];
+//   if (get_real_path("./foo/bar.txt", buf, sizeof(buf))) {
+//       printf("Resolved in buffer: %s\n", buf);
+//   }
+//
+//   char *joined = path_join("dir/sub", "file.txt");
+//   if (joined) { printf("Joined: %s\n", joined); free(joined); }
+//
 
 // ============= INCLUDES =============
 #ifndef _WIN32
