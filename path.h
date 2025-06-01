@@ -48,6 +48,12 @@
 //   if (joined) { printf("Joined: %s\n", joined); free(joined); }
 //
 
+// ============= FLUENT LIB C++ =============
+#if defined(__cplusplus)
+extern "C"
+{
+#endif
+
 // ============= INCLUDES =============
 #ifndef _WIN32
 #   include <unistd.h> // For POSIX path functions
@@ -190,5 +196,10 @@ static inline char *path_join(const char *const path1, const char *const path2)
     // Return the normalized path
     return normalized_path;
 }
+
+// ============= FLUENT LIB C++ =============
+#if defined(__cplusplus)
+}
+#endif
 
 #endif //FLUENT_LIBC_PATH_LIBRARY_H
