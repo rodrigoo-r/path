@@ -79,4 +79,32 @@ static inline char *get_real_path(const char *const path)
 #endif
 }
 
+static inline char *path_join(const char *const path1, const char *const path2)
+{
+    // Validate the input paths
+    if (!path1 || !path2 || path1[0] == '\0' || path2[0] == '\0')
+    {
+        return NULL; // Invalid paths
+    }
+
+    // Use a string builder to construct the joined path
+    string_builder_t sb;
+    init_string_builder(&sb, 256, 1.5); // Initialize with a reasonable size
+    write_string_builder(&sb, path1); // Write the first path
+    write_char_string_builder(&sb, PATH_SEPARATOR); // Add the path separator
+    write_string_builder(&sb, path2); // Write the second path
+
+    // Collect the result from the string builder without copying
+    const char *joined_path = collect_string_builder_no_copy(&sb);
+
+    // Normalize the path to remove any redundant separators
+    char *normalized_path = get_real_path(joined_path);
+
+    // Free the string builder resources
+    destroy_string_builder(&sb);
+
+    // Return the normalized path
+    return normalized_path;
+}
+
 #endif //FLUENT_LIBC_PATH_LIBRARY_H
