@@ -79,6 +79,19 @@ static inline char *get_real_path(const char *const path)
 #endif
 }
 
+/**
+ * @brief Joins two file system paths and returns the normalized absolute path.
+ *
+ * This function concatenates two paths using the appropriate path separator for the platform,
+ * then normalizes the result to resolve any redundant separators, relative components, or symbolic links.
+ * The returned path is an absolute, canonicalized path.
+ *
+ * @param path1 The first path component. Must not be NULL or empty.
+ * @param path2 The second path component. Must not be NULL or empty.
+ * @return A newly allocated string containing the normalized absolute path,
+ *         or NULL if the input is invalid, the path cannot be resolved,
+ *         or memory allocation fails. The caller is responsible for freeing the returned string.
+ */
 static inline char *path_join(const char *const path1, const char *const path2)
 {
     // Validate the input paths
