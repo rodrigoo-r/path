@@ -79,6 +79,18 @@ static inline char *get_real_path(const char *const path)
 #endif
 }
 
+/**
+ * @brief Resolves the absolute, canonicalized path for a given file system path into a user-provided buffer.
+ *
+ * This function takes a file system path and writes its absolute, canonicalized version into the provided buffer.
+ * On POSIX systems, it uses `realpath` to resolve symbolic links and relative components.
+ * On Windows systems, it uses `GetFullPathNameA` to obtain the absolute path.
+ *
+ * @param path The input file system path to resolve. Must not be NULL or empty.
+ * @param buffer The buffer to store the resolved absolute path. Must not be NULL.
+ * @param buffer_size The size of the buffer in bytes.
+ * @return 1 if the path was resolved successfully, 0 otherwise.
+ */
 static inline int get_real_path(const char *const path, char *const buffer, const size_t buffer_size)
 {
     // Validate the input path
