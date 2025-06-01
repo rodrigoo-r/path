@@ -11,5 +11,20 @@
 #ifndef FLUENT_LIBC_PATH_LIBRARY_H
 #define FLUENT_LIBC_PATH_LIBRARY_H
 
+// ============= FLUENT LIB C =============
+
+// ============= INCLUDES =============
+#ifndef _WIN32
+#   include <unistd.h> // For POSIX path functions
+#   define PATH_SEPARATOR '/'
+#else
+#   include <windows.h> // For Windows path functions
+#   define PATH_SEPARATOR '\\'
+#endif
+#ifndef FLUENT_LIBC_RELEASE
+#   include <string_builder.h> // fluent_libc
+#else
+#   include <fluent/string_builder/string_builder.h> // fluent_libc
+#endif
 
 #endif //FLUENT_LIBC_PATH_LIBRARY_H
