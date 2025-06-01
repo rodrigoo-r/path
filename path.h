@@ -123,10 +123,9 @@ static inline char *get_real_path(const char *const path)
  *
  * @param path The input file system path to resolve. Must not be NULL or empty.
  * @param buffer The buffer to store the resolved absolute path. Must not be NULL.
- * @param buffer_size The size of the buffer in bytes.
  * @return 1 if the path was resolved successfully, 0 otherwise.
  */
-static inline int get_real_path(const char *const path, char *const buffer, const size_t buffer_size)
+static inline int get_real_path(const char *const path, char *const buffer)
 {
     // Validate the input path
     if (!path || path[0] == '\0')
@@ -145,8 +144,9 @@ static inline int get_real_path(const char *const path, char *const buffer, cons
 
     return resolved_path != NULL; // Return whether the path was resolved successfully
 #else
-    DWORD len = GetFullPathNameA(path, (DWORD)buffer_size, buffer, NULL);
-    return len > 0 && len < buffer_size ? 1 : 0; // Return whether the path was resolved successfully
+    const size_t buf_size = sizeof(buffer);
+    DWORD len = GetFullPathNameA(path, (DWORD)buf_size, buffer, NULL);
+    return len > 0 && len < buf_size ? 1 : 0; // Return whether the path was resolved successfully
 #endif
 }
 
