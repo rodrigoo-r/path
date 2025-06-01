@@ -79,6 +79,30 @@ static inline char *get_real_path(const char *const path)
 #endif
 }
 
+static inline int get_real_path(const char *const path, char *const buffer, const size_t buffer_size)
+{
+    // Validate the input path
+    if (!path || path[0] == '\0')
+    {
+        return 0; // Invalid path
+    }
+
+    // Depending on the platform, use the appropriate method to resolve the real path
+#ifndef _WIN32
+    // Use realpath for POSIX systems
+    char *resolved_path = realpath(path, buffer);
+    if (!resolved_path)
+    {
+        return 0; // Failed to resolve the path
+    }
+
+    return resolved_path != NULL; // Return whether the path was resolved successfully
+#else
+    DWORD len = GetFullPathNameA(path, (DWORD)buffer_size, buffer, NULL);
+    return len > 0 && len < buffer_size ? 1 : 0; // Return whether the path was resolved successfully
+#endif
+}
+
 /**
  * @brief Joins two file system paths and returns the normalized absolute path.
  *
