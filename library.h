@@ -8,8 +8,8 @@
  * under certain conditions; type show c' for details.
 */
 
-#ifndef PATH_LIBRARY_H
-#define PATH_LIBRARY_H
+#ifndef FLUENT_LIBC_PATH_LIBRARY_H
+#define FLUENT_LIBC_PATH_LIBRARY_H
 
 
-#endif //PATH_LIBRARY_H
+#endif //FLUENT_LIBC_PATH_LIBRARY_H
