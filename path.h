@@ -69,6 +69,49 @@ extern "C"
 #endif
 
 /**
+ * @brief Extracts the file name component from a given file system path.
+ *
+ * This function scans the input path and returns a newly allocated string containing
+ * only the file name (the last segment after the final path separator).
+ * If the path ends with a separator or is empty/NULL, NULL is returned.
+ * The returned string must be freed by the caller.
+ *
+ * @param path The input file system path. Must not be NULL or empty.
+ * @return A newly allocated string containing the file name, or NULL on error.
+ */
+static inline char *get_file_name(const char *const path)
+{
+    // Validate the input path
+    if (!path || path[0] == '\0')
+    {
+        return NULL; // Invalid path
+    }
+
+    // Create a string builder to hold the file name
+    string_builder_t sb;
+    init_string_builder(&sb, 64, 1.5); // Initialize with a reasonable size
+
+    // Iterate over the path to find the last separator
+    for (size_t i = 0; path[i] != '\0'; i++)
+    {
+        // If we find a path separator, reset the string builder
+        if (path[i] == PATH_SEPARATOR)
+        {
+            // Reset the string builder to start fresh for the next segment
+            reset_string_builder(&sb);
+        }
+        else
+        {
+            // Append the character to the string builder
+            write_char_string_builder(&sb, path[i]);
+        }
+    }
+
+    // Return the collected file name from the string builder
+    return collect_string_builder_no_copy(&sb);
+}
+
+/**
  * @brief Resolves the absolute, canonicalized path for a given file system path.
  *
  * This function takes a file system path and returns its absolute, canonicalized version.
