@@ -60,6 +60,7 @@ extern "C"
 #   define PATH_SEPARATOR '/'
 #else
 #   include <windows.h> // For Windows path functions
+#   include <direct.h>  // For _getcwd on Windows
 #   define PATH_SEPARATOR '\\'
 #endif
 #ifndef FLUENT_LIBC_RELEASE
@@ -67,6 +68,41 @@ extern "C"
 #else
 #   include <fluent/string_builder/string_builder.h> // fluent_libc
 #endif
+
+// ============= GLOBALS =============
+static char __fluent_libc_path_cwd[256];
+static int __fluent_libc_path_cwd_initialized = 0;
+
+static inline char *get_cwd()
+{
+    // If the current working directory is already cached, return it
+    if (__fluent_libc_path_cwd_initialized)
+    {
+        return __fluent_libc_path_cwd;
+    }
+
+#ifndef _WIN32
+    // Use getcwd to get the current working directory on POSIX systems
+    char *cwd = getcwd(__fluent_libc_path_cwd, sizeof(__fluent_libc_path_cwd));
+    if (!cwd)
+    {
+        return NULL; // Failed to get the current working directory
+    }
+#else
+    // Use _getcwd to get the current working directory on Windows systems
+    char *cwd = _getcwd(__fluent_libc_path_cwd, sizeof(__fluent_libc_path_cwd));
+    if (!cwd)
+    {
+        return NULL; // Failed to get the current working directory
+    }
+#endif
+
+    // Mark the current working directory as initialized
+    __fluent_libc_path_cwd_initialized = 1;
+
+    // Return the cached current working directory
+    return __fluent_libc_path_cwd;
+}
 
 /**
  * @brief Extracts the file name component from a given file system path.
