@@ -73,6 +73,19 @@ extern "C"
 static char __fluent_libc_path_cwd[256];
 static int __fluent_libc_path_cwd_initialized = 0;
 
+/**
+ * @brief Returns the current working directory as a cached string.
+ *
+ * This function retrieves the current working directory and caches it in a static buffer
+ * to avoid repeated system calls. On subsequent calls, the cached value is returned unless
+ * the process changes its working directory (in which case, the cache may become stale).
+ *
+ * On POSIX systems, it uses getcwd; on Windows, it uses _getcwd.
+ *
+ * @return A pointer to a static buffer containing the current working directory,
+ *         or NULL if the directory cannot be retrieved.
+ *         The returned pointer must NOT be freed by the caller.
+ */
 static inline char *get_cwd()
 {
     // If the current working directory is already cached, return it
