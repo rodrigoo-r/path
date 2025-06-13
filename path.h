@@ -59,9 +59,8 @@ extern "C"
 #   include <unistd.h> // For POSIX path functions
 #   define PATH_SEPARATOR '/'
 #else
-// Pending Windows implementation review
-// #   include <windows.h> // For Windows path functions
-// #   include <direct.h>  // For _getcwd on Windows
+#   include <windows.h> // For Windows path functions
+#   include <direct.h>  // For _getcwd on Windows
 #   define PATH_SEPARATOR '\\'
 #endif
 #ifndef FLUENT_LIBC_RELEASE
@@ -103,13 +102,12 @@ static inline char *get_cwd()
         return NULL; // Failed to get the current working directory
     }
 #else
-    return NULL; // Windows implementation pending review
-//    // Use _getcwd to get the current working directory on Windows systems
-//    char *cwd = _getcwd(__fluent_libc_path_cwd, sizeof(__fluent_libc_path_cwd));
-//    if (!cwd)
-//    {
-//        return NULL; // Failed to get the current working directory
-//    }
+    // Use _getcwd to get the current working directory on Windows systems
+    char *cwd = _getcwd(__fluent_libc_path_cwd, sizeof(__fluent_libc_path_cwd));
+    if (!cwd)
+    {
+        return NULL; // Failed to get the current working directory
+    }
 #endif
 
     // Mark the current working directory as initialized
@@ -194,22 +192,20 @@ static inline char *get_real_path(const char *const path)
 
     return resolved_path; // Return the resolved path
 #else
-    // Pending Windows implementation review
-    return NULL; // Windows implementation pending review
     // Warning: Reprocesses the same path, no way around it
     // without overallocating for Windows systems
     // Use GetFullPathName for Windows systems
-//    DWORD length = GetFullPathNameA(path, 0, NULL, NULL);
-//    if (length == 0)
-//    {
-//        return NULL; // Failed to get the path length
-//    }
+    const DWORD length = GetFullPathNameA(path, 0, NULL, NULL);
+    if (length == 0)
+    {
+        return NULL; // Failed to get the path length
+    }
 
-//    char *resolved_path = (char *)malloc(length + 1);
-//    if (!resolved_path)
-//    {
-//        return NULL; // Memory allocation failed
-//    }
+    char *resolved_path = (char *)malloc(length + 1);
+    if (!resolved_path)
+    {
+        return NULL; // Memory allocation failed
+    }
 
 //    GetFullPathNameA(path, length + 1, resolved_path, NULL);
 //    return resolved_path; // Return the resolved path
@@ -246,11 +242,9 @@ static inline int get_real_path_buff(const char *const path, char *const buffer)
 
     return resolved_path != NULL; // Return whether the path was resolved successfully
 #else
-    // Pending Windows implementation review
-    return 0; // Windows implementation pending review
-//    const size_t buf_size = sizeof(buffer);
-//    DWORD len = GetFullPathNameA(path, (DWORD)buf_size, buffer, NULL);
-//    return len > 0 && len < buf_size ? 1 : 0; // Return whether the path was resolved successfully
+    const size_t buf_size = sizeof(buffer);
+    const DWORD len = GetFullPathNameA(path, (DWORD)buf_size, buffer, NULL);
+    return len > 0 && len < buf_size ? 1 : 0; // Return whether the path was resolved successfully
 #endif
 }
 
