@@ -59,9 +59,12 @@ extern "C"
 #   include <unistd.h> // For POSIX path functions
 #   define PATH_SEPARATOR '/'
 #else
-#   include <windows.h> // For Windows path functions
-#   include <direct.h>  // For _getcwd on Windows
-#   define PATH_SEPARATOR '\\'
+//  For Windows, we need to include the Windows SDK headers
+#   ifndef FLUENT_LIBC_NO_WINDOWS_SDK
+#       include <windows.h> // For Windows path functions
+#       include <direct.h>  // For _getcwd on Windows
+#       define PATH_SEPARATOR '\\'
+#   endif
 #endif
 #ifndef FLUENT_LIBC_RELEASE
 #   include <string_builder.h> // fluent_libc
@@ -102,6 +105,9 @@ static inline char *get_cwd()
         return NULL; // Failed to get the current working directory
     }
 #else
+#   ifdef FLUENT_LIBC_NO_WINDOWS_SDK
+    return NULL; // If Windows SDK is not included, we cannot get the current working directory
+#   endif
     // Use _getcwd to get the current working directory on Windows systems
     char *cwd = _getcwd(__fluent_libc_path_cwd, sizeof(__fluent_libc_path_cwd));
     if (!cwd)
@@ -192,6 +198,9 @@ static inline char *get_real_path(const char *const path)
 
     return resolved_path; // Return the resolved path
 #else
+#   ifdef FLUENT_LIBC_NO_WINDOWS_SDK
+    return NULL; // If Windows SDK is not included, we cannot get the real path
+#   endif
     // Warning: Reprocesses the same path, no way around it
     // without overallocating for Windows systems
     // Use GetFullPathName for Windows systems
@@ -242,6 +251,9 @@ static inline int get_real_path_buff(const char *const path, char *const buffer)
 
     return resolved_path != NULL; // Return whether the path was resolved successfully
 #else
+#   ifdef FLUENT_LIBC_NO_WINDOWS_SDK
+    return -1; // If Windows SDK is not included, we cannot get the real path
+#   endif
     const size_t buf_size = sizeof(buffer);
     const DWORD len = GetFullPathNameA(path, (DWORD)buf_size, buffer, NULL);
     return len > 0 && len < buf_size ? 1 : 0; // Return whether the path was resolved successfully
@@ -263,6 +275,10 @@ static inline int get_real_path_buff(const char *const path, char *const buffer)
  */
 static inline char *path_join(const char *const path1, const char *const path2)
 {
+#if defined(FLUENT_LIBC_NO_WINDOWS_SDK) && defined(_WIN32)
+    return NULL; // If Windows SDK is not included, we cannot join paths
+#endif
+
     // Validate the input paths
     if (!path1 || !path2 || path1[0] == '\0' || path2[0] == '\0')
     {
